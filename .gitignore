@@ -1,0 +1,84 @@
+# Unreal Engine 5 .gitignore
+
+# Binaries
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+
+# Build artifacts
+*.a
+*.so
+*.dylib
+*.dll
+*.lib
+*.exe
+*.o
+*.obj
+*.pbxproj
+
+# IDE
+.vscode/
+.idea/
+.vs/
+*.xcworkspace/
+*.xcodeproj/
+*.sln
+*.VC.db
+*.VC.VC.opendb
+
+# Build files
+*.generated.h
+*.generated.cpp
+Makefile
+*.make
+
+# Temp/Cache
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.gradle/
+
+# Editor backup files
+*~
+*.swp
+*.bak
+*.backup
+
+# Python/Pip
+*.pyc
+__pycache__/
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.venv/
+venv/
+ENV/
+
+# Marketplace plugins (optional - uncomment if needed)
+# Plugins/Marketplace/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace.local
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+
+# Live coding
+.live/
+
+# Unreal Editor auto-generated files
+*.log
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# Additional generated files
+*.VC.db-wal
+*.VC.db-shm
