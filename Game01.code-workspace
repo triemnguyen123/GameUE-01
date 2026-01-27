@@ -566,8 +566,6 @@
 				"args": [
 					"-projectfiles",
 					"-vscode",
-					"-project=/Users/triemnguyen/Desktop/Game01/Game01.uproject",
-					"-game",
 					"-engine",
 					"-dotnet"
 				],

@@ -13,5 +13,6 @@ UCLASS(Abstract)
 class GAME01_API AAuraCharacter : public AAuraCharacterBase
 {
 	GENERATED_BODY()
-	
+public:
+	AAuraCharacter();
 };
