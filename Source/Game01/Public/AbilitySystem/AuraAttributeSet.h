@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
+#include "Net/UnrealNetwork.h"
 #include "AuraAttributeSet.generated.h"
 
 
