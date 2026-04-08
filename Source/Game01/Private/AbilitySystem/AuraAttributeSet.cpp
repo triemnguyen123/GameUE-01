@@ -9,7 +9,8 @@ UAuraAttributeSet::UAuraAttributeSet() {
     InitMana(10.f);
     InitMaxMana(100.f);
 }
-
+// đoạn này mục đích là để Health và mana được gửi riêng biệt đến
+// internet của mỗi user khác nhau
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty> &OutLifetimeProps) const {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 

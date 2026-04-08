@@ -24,8 +24,14 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGam
         return;
 
     check(GameplayEffectClass);
+    // tạo context gửi thông tin đi
     FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
     EffectContextHandle.AddSourceObject(this);
+    // Bạn đưa vào GameplayEffectClass (ví dụ: bình mana).
+    // Trong Blueprint của bình mana đó, bạn đã chọn Attribute: Mana.
+    // Khi bạn gọi dòng dưới đây, hệ thống sẽ tìm đến Attribute "Mana" trong bình mana đó
+    // và cộng thêm 50 vào giá trị hiện tại của người chơi.
     FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContextHandle);
+    // bơm dữ liệu vào Actor đã được gắn
     TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }

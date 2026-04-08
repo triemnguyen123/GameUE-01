@@ -2,56 +2,54 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
-#include "Net/UnrealNetwork.h"
 #include "AuraAttributeSet.generated.h"
+#include "CoreMinimal.h"
+#include "Net/UnrealNetwork.h"
 
-
-#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
-	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName)           \
+    GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+    GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName)               \
+    GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName)               \
+    GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 /**
- * 
+ *
  */
 UCLASS()
-class GAME01_API UAuraAttributeSet : public UAttributeSet
-{
-	GENERATED_BODY()
-public:
+class GAME01_API UAuraAttributeSet : public UAttributeSet {
+    GENERATED_BODY()
+  public:
     UAuraAttributeSet();
     //~ khai bao cac bien co the gui from client -> server
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty> &OutLifetimeProps) const override;
-    
-    UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Health, Category="Vital Attributes")
+
+    // Group macro tự động tạo getter, setter, init, repnotify
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
     FGameplayAttributeData Health;
     ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
-    
-    UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_MaxHealth, Category="Vital Attributes")
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
     FGameplayAttributeData MaxHealth;
     ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
-    
-    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category="Vital Attributes")
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Vital Attributes")
     FGameplayAttributeData Mana;
     ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
-    
-    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category="Vital Attributes")
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
     FGameplayAttributeData MaxMana;
     ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
-    
-    UFUNCTION()
-    void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
-    UFUNCTION()
-    void OnRep_MaxHealth(const FGameplayAttributeData& MaxOldHealth) const;
-    
-    UFUNCTION()
-    void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
     UFUNCTION()
-    void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
-    
+    void OnRep_Health(const FGameplayAttributeData &OldHealth) const;
+    UFUNCTION()
+    void OnRep_MaxHealth(const FGameplayAttributeData &MaxOldHealth) const;
+
+    UFUNCTION()
+    void OnRep_Mana(const FGameplayAttributeData &OldMana) const;
+
+    UFUNCTION()
+    void OnRep_MaxMana(const FGameplayAttributeData &OldMaxMana) const;
 };
