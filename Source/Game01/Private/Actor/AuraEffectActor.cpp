@@ -9,9 +9,49 @@
 #include "Components/SphereComponent.h"
 
 AAuraEffectActor::AAuraEffectActor() {
-
     PrimaryActorTick.bCanEverTick = false;
     SetRootComponent(CreateDefaultSubobject<USceneComponent>("SceneRoot"));
+}
+
+void AAuraEffectActor::OnOverlap(AActor *TargetActor) {
+    if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap) {
+        ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
+    }
+    if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap) {
+        ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
+    }
+    if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap) {
+        ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+    }
+}
+
+void AAuraEffectActor::OnEndOverlap(AActor *TargetActor) {
+    if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap) {
+        ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
+    }
+    if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap) {
+        ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
+    }
+    if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap) {
+        ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+    }
+
+    if (InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap) {
+        UAbilitySystemComponent *TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+        if (!IsValid(TargetASC))
+            return;
+
+        TArray<FActiveGameplayEffectHandle> HandlesToRemove;
+        for (auto HandlePair : ActiveEffectHandles) {
+            if (HandlePair.Value == TargetASC) {
+                TargetASC->RemoveActiveGameplayEffect(HandlePair.Key, 1);
+                HandlesToRemove.Add(HandlePair.Key);
+            }
+        }
+        for (auto &Handle : HandlesToRemove) {
+            ActiveEffectHandles.Remove(Handle);
+        }
+    }
 }
 
 void AAuraEffectActor::BeginPlay() {
@@ -24,14 +64,13 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGam
         return;
 
     check(GameplayEffectClass);
-    // tạo context gửi thông tin đi
     FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
     EffectContextHandle.AddSourceObject(this);
-    // Bạn đưa vào GameplayEffectClass (ví dụ: bình mana).
-    // Trong Blueprint của bình mana đó, bạn đã chọn Attribute: Mana.
-    // Khi bạn gọi dòng dưới đây, hệ thống sẽ tìm đến Attribute "Mana" trong bình mana đó
-    // và cộng thêm 50 vào giá trị hiện tại của người chơi.
-    FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContextHandle);
-    // bơm dữ liệu vào Actor đã được gắn
-    TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+    const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, EffectLevel, EffectContextHandle);
+    const FActiveGameplayEffectHandle ActiveGEHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+
+    const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
+    if (bIsInfinite && InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap) {
+        ActiveEffectHandles.Add(ActiveGEHandle, TargetASC);
+    }
 }
